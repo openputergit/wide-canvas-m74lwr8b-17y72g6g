@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeM Bid Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">
+                GeM Bid Downloader
+                <i class="bi bi-cloud-download text-blue-500"></i>
+            </h1>
+
+            <!-- Category Selection -->
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
+                    Select Product Category
+                </label>
+                <select id="category" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Select a category</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="furniture">Furniture</option>
+                    <option value="stationery">Stationery</option>
+                    <option value="it-equipment">IT Equipment</option>
+                    <option value="office-supplies">Office Supplies</option>
+                </select>
+            </div>
+
+            <!-- Date Filter -->
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="startDate">
+                    Start Date Filter
+                </label>
+                <input type="date" id="startDate" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Download Button -->
+            <button id="downloadBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                <i class="bi bi-download"></i>
+                Download Bids
+                <span id="loadingSpinner" class="hidden">
+                    <i class="bi bi-arrow-repeat loading"></i>
+                </span>
+            </button>
+
+            <!-- Status Message -->
+            <div id="status" class="mt-4 text-center text-sm"></div>
+
+            <!-- Downloaded Bids List -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold mb-3">Downloaded Bids</h3>
+                <div id="downloadedBids" class="space-y-2">
+                    <!-- Bids will be listed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', async function() {
+            const category = document.getElementById('category').value;
+            const startDate = document.getElementById('startDate').value;
+            const spinner = document.getElementById('loadingSpinner');
+            const status = document.getElementById('status');
+            const downloadedBids = document.getElementById('downloadedBids');
+
+            if (!category || !startDate) {
+                status.innerHTML = '<span class="text-red-500">Please select both category and start date</span>';
+                return;
+            }
+
+            try {
+                // Show loading state
+                spinner.classList.remove('hidden');
+                status.innerHTML = '<span class="text-blue-500">Downloading bids...</span>';
+
+                // Simulate API call with timeout
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Simulate downloaded bids
+                const mockBids = [
+                    { id: 'BID001', title: `${category.toUpperCase()} - Office Equipment`, date: startDate },
+                    { id: 'BID002', title: `${category.toUpperCase()} - Supplies Package`, date: startDate },
+                    { id: 'BID003', title: `${category.toUpperCase()} - Bulk Order`, date: startDate }
+                ];
+
+                // Clear previous bids
+                downloadedBids.innerHTML = '';
+
+                // Add new bids to the list
+                mockBids.forEach(bid => {
+                    const bidElement = document.createElement('div');
+                    bidElement.className = 'p-3 bg-gray-50 rounded-lg flex justify-between items-center';
+                    bidElement.innerHTML = `
+                        <div>
+                            <span class="font-medium">${bid.id}</span>
+                            <p class="text-sm text-gray-600">${bid.title}</p>
+                            <p class="text-xs text-gray-500">Date: ${bid.date}</p>
+                        </div>
+                        <button class="text-blue-500 hover:text-blue-600" onclick="alert('Bid details downloaded!')">
+                            <i class="bi bi-file-earmark-arrow-down"></i>
+                        </button>
+                    `;
+                    downloadedBids.appendChild(bidElement);
+                });
+
+                status.innerHTML = '<span class="text-green-500">Successfully downloaded bids!</span>';
+            } catch (error) {
+                status.innerHTML = '<span class="text-red-500">Error downloading bids. Please try again.</span>';
+            } finally {
+                spinner.classList.add('hidden');
+            }
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
